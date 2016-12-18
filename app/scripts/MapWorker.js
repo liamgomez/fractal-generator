@@ -66,102 +66,159 @@ var colors = new Uint32Array([
 
   // Functions return number from 0 to (maxIter-1)
 var fractalFunctions = {
-  mandlebrot: function (cx, cy, maxIter) {
-    var iter, xn, x = 0, y = 0, xx = 0, yy = 0;
-    for (iter = 0; xx + yy < 4 && iter < maxIter; iter++) {
-      xn = xx - yy + cx;
-      y = (x * y) * 2 + cy;
-      yy = y * y;
-      x = xn;
-      xx = x * x;
-    }
+    'mandlebrot': function(cx, cy, maxIter) {
+        var iter, xn, yn, x = 0, y = 0;
+        for (iter = 0; iter < maxIter; iter++) {
+            xn = x*x - y*y + cx;
+            yn = (x*y)*2 + cy;
+            if (xn*xn + yn*yn > 4) {
+                break;
+            }
+            x = xn;
+            y = yn;
+        }
+        
+        return iter;
+    },
+    juliacubed : function(x, y, maxIter) {
+        var x0 = x, y0 = y;
+        var iter;
+        var xx = x*x, yy = y*y;
+        var phi = 1.6180339887;
+        for (iter = 0; iter < maxIter; iter++) {
+            tx = x;
+            ty = y;
 
-    return iter;
-  },
-  burningShip: function (cx, cy, maxIter) {
-    var iter, xn, x = 0, y = 0, yy = 0, xx = 0;
-    for (iter = 0; xx + yy < 4 && iter < maxIter; iter++) {
-      xn = xx - yy - cx;
-      y = 2 * Math.abs(x * y) + cy;
-      yy = y * y;
-      x = xn;
-      xx = x * x;
-    }
+            tx2 = x*x-y*y;
+            ty2 = 2*x*y;
 
-    return iter;
-  },
-  multibrot: function (cx, cy, maxIter, cr) {
-    var iter, xn, x = 0, y = 0, xx = 0, yy = 0, n1, n2, n3;
-    for (iter = 0; xx + yy < 4 && iter < maxIter; iter++) {
-      n3 = (xx + yy);
-      if (!n3) {
-        x = cx;
-        y = cy;
-        xx = x * x;
-        yy = y * y;
-        continue;
-      }
-      n1 = Math.pow(n3, (cr >> 1));
-      n2 = cr * Math.atan2(y, x);
-      xn = n1 * Math.cos(n2) + cx;
-      y = n1 * Math.sin(n2) + cy;
-      x = xn;
-      yy = y * y;
-      xx = x * x;
-    }
+            x = tx2*tx-ty2*ty + 1-phi;
+            y = tx2*ty+ty2*tx + 0.3;
 
-    return iter;
-  },
-  multibrot3: function (cx, cy, maxIter) {
-    var iter, xn, x = 0, y = 0, xx = 0, yy = 0;
-    for (iter = 0; xx + yy < 4 && iter < maxIter; iter++) {
-      xn = (xx * x) - 3 * x * (yy) + cx;
-      y = 3 * (xx) * y - (yy * y) + cy;
-      yy = y * y;
-      x = xn;
-      xx = x * x;
-    }
+            xx = x*x;
+            yy = y*y;
 
-    return iter;
-  },
-  multibrot5: function (cx, cy, maxIter) {
-    var iter, xn, x = 0, y = 0, xx = 0, yy = 0, yyy = 0, xxx = 0;
-    for (iter = 0; xx + yy < 4 && iter < maxIter; iter++) {
-      xn = (xx * xxx) - (10 * (xxx) * (yy)) + (5 * x * (yy * yy)) + cx;
-      y = (5 * (xx * xx) * y) - (10 * xx * (yyy)) + (yyy * yy) + cy;
-      yy = y * y;
-      yyy = yy * y;
-      x = xn;
-      xx = x * x;
-      xxx = xx * x;
-    }
+            if (xx+yy > 4)
+            {
+                break;
+            }
+        }
+        return iter;
+    },
+    'burningShip': function(cx, cy, maxIter) {
+        var iter, xn, yn, x = 0, y = 0;
+        for (iter = 0; iter < maxIter; iter++) {
+            xn =  x*x - y*y - cx;
+            yn = 2*Math.abs(x*y) + cy;
+            if (xn*xn + yn*yn > 4) {
+                break;
+            }
+            x = xn;
+            y = yn;
+        }
+        
+        return iter;
+    },
+    multibrot4 : function(x, y, maxIt, er2) {
+        var x0 = x, y0 = y;
+        var xx = x*x, yy = y*y;
+        var itt;
+        for (itt = 0; itt < maxIt; itt++) {
+            y = 2*x*y;
+            x = xx - yy;
+            yy = y*y;
+            xx = x*x;
+            y = 2*x*y + y0;
+            x = xx - yy + x0;
+            yy = y*y;
+            xx = x*x;
+            if (xx+yy > 4){
+                break;
+            }
+        }
 
-    return iter;
-  },
-  tricorn: function (cx, cy, maxIter) {
-    var iter, xn, x = 0, y = 0, yy = 0, xx = 0;
-    for (iter = 0; xx + yy < 4 && iter < maxIter; iter++) {
-      xn = xx - yy - cx;
-      y = (x + x) * (-y) + cy;
-      yy = y * y;
-      x = xn;
-      xx = x * x;
-    }
+        return itt;
+    },
 
-    return iter;
-  },
-  julia: function (cx, cy, maxIter, cr, ci) {
-    var iter, xn, x = cx, y = cy, yy = y * y, xx = x * x;
-    for (iter = 0; xx + yy < 4 && iter < maxIter; iter++) {
-      xn = xx - yy + cr;
-      y = (x * y) * 2 + ci;
-      yy = y * y;
-      x = xn;
-      xx = x * x;
+    multibrot8 : function(x, y, it, er2) {
+        var x0 = x, y0 = y;
+        var xx = x*x, yy = y*y;
+        do {
+            y = 2*x*y;
+            x = xx - yy;
+            yy = y*y;
+            xx = x*x;
+            y = 2*x*y;
+            x = xx - yy;
+            yy = y*y;
+            xx = x*x;
+            y = 2*x*y + y0;
+            x = xx - yy + x0;
+            yy = y*y;
+            xx = x*x;
+            if (xx+yy > er2)
+                break;
+        } while(--it)
+        return {
+            it : it, x : x, y : y, xx : xx, yy : yy
+        };
+    },
+    'multibrot3': function(cx, cy, maxIter) {
+        var iter, xn, yn, x = 0, y = 0;
+        for (iter = 0; iter < maxIter; iter++) {
+            xn=Math.pow(x,3)-3*x*Math.pow(y,2) + cx;
+            yn=3*Math.pow(x,2)*y-Math.pow(y,3) + cy;
+            if (xn*xn + yn*yn > 4) {
+                break;
+            }
+            x = xn;
+            y = yn;
+        }
+        
+        return iter;
+    },
+   'multibrot5': function(cx, cy, maxIter) {
+        var iter, xn, yn, x = 0, y = 0;
+        for (iter = 0; iter < maxIter; iter++) {
+            xn=Math.pow(x,5)-(10*Math.pow(x,3)*Math.pow(y,2))+(5*x*Math.pow(y,4)) + cx;
+            yn=(5*Math.pow(x,4)*y)-(10*x*x*Math.pow(y,3))+Math.pow(y,5) + cy;
+            if (xn*xn + yn*yn > 4) {
+                break;
+            }
+            x = xn;
+            y = yn;
+        }
+        
+        return iter;
+    },
+    'tricorn': function(cx, cy, maxIter) {
+        var iter, xn, yn, x = 0, y = 0;
+        for (iter = 0; iter < maxIter; iter++) {
+            xn =  x*x - y*y - cx;
+            yn =(x+x)*(-y) + cy;
+            if (xn*xn + yn*yn > 4) {
+                break;
+            }
+            x = xn;
+            y = yn;
+        }
+        
+        return iter;
+    },
+    'julia': function(cx, cy, maxIter, cr, ci) {
+        var iter, xn, yn, x = cx, y = cy;
+        for (iter = 0; iter < maxIter; iter++) {
+            xn = x*x - y*y + cr;
+            yn = (x*y)*2 + ci;
+            if (xn*xn + yn*yn > 4) {
+                break;
+            }
+            x = xn;
+            y = yn;
+        }
+        
+        return iter;
     }
-
-    return iter;
-  }
 }
 
 function workerFunc(data, cb) {
@@ -171,49 +228,48 @@ function workerFunc(data, cb) {
   var d = (scale << 8);
   var pixels = new Array(65536);
   var MAX_ITER = data.maxIter;
-  var c, cx, cy, iter, i = 0, px, py, a1, a2, a3, a4;
+  var c, cx, cy, iter, px, py, a1, a2, a3, a4;
   var func = fractalFunctions[data.type];
-  while (i < 65536) {
-    px = i % 256;
-    py = (i - px) >> 8;
-    cx = x0 + px / d;
-    cy = y0 + py / d;
-    iter = func(cx, cy, MAX_ITER, data.cr, data.ci);
-    c = ~~((iter / MAX_ITER) * 360);
-    pixels[i++] = colors[c];
-    pixels[i++] = colors[c];
-  }
-  i = 1;
-  while (i < 65536) {
-    px = i % 256;
-    py = (i - px) >> 8;
-    cx = x0 + px / d;
-    cy = y0 + py / d;
-    if (!px || !py || !px % 255 || py % 255) {
-      iter = func(cx, cy, MAX_ITER, data.cr, data.ci);
-      c = ~~((iter / MAX_ITER) * 360);
-      pixels[i++] = colors[c];
+
+    if (! data.customColors) {
+        for (var i = 0; i < 65536; i++) {
+            px = i % 256;
+            py = (i - px) >> 8;
+            cx = x0 + px / d;
+            cy = y0 + py / d;
+            iter = func(cx, cy, MAX_ITER, data.cr, data.ci);
+            c = ~~((iter / MAX_ITER) * 360);
+            pixels[i] = colors[c];
+        }
+        var array = new Uint32Array(pixels);
+        var canvas_image = new Uint8ClampedArray(array.buffer);
+
+        return canvas_image;
     }
     else {
-      a1 = pixels[i + 1];
-      a2 = pixels[i - 1];
-      a3 = pixels[i + 256];
-      a4 = pixels[i - 256];
-      if (a1 === a2 && a2 === a3 && a3 === a4) {
-        i++;
-      } else {
-        iter = func(cx, cy, MAX_ITER, data.cr, data.ci);
-        c = Math.floor(((iter / MAX_ITER) * 360));
-        pixels[i++] = colors[c];
-      }
+        // tile size = 256 rgb = 4 bits
+        var bitmap = new Uint8ClampedArray(256 * 256 * 4);
+        var pixelOffset = 0;
+        for (var i = 0; i < 65536; i++) {
+            px = i % 256;
+            py = (i - px) >> 8;
+            cx = x0 + px / d;
+            cy = y0 + py / d;
+            iter = func(cx, cy, MAX_ITER, data.cr, data.ci);
+            c = ~~((iter / MAX_ITER) * 255);
+            var rgbArr = data.presetMap[c];
+            bitmap[pixelOffset] = rgbArr[0];
+            pixelOffset++;
+            bitmap[pixelOffset] = rgbArr[1];
+            pixelOffset++;
+            bitmap[pixelOffset] = rgbArr[2];
+            pixelOffset++;
+            bitmap[pixelOffset] = 255;
+            pixelOffset++;
+        }
+        return bitmap;
     }
-    i++;
-  }
-    var array = new Uint32Array(pixels);
-    var canvas_image = new Uint8ClampedArray(array.buffer);
-    return canvas_image;
 }
-
 
 self.onmessage = function (e) {
     var ctx_image = self.workerFunc(e.data);

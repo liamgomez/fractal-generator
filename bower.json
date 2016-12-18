@@ -3,7 +3,8 @@
   "private": true,
   "dependencies": {
     "bootstrap": "~3.3.5",
-    "dat.gui": "dataarts/dat.gui#^0.6.2"
+    "dat.gui": "dataarts/dat.gui#^0.6.2",
+    "colz": "carloscabo/colz"
   },
   "overrides": {
     "bootstrap": {
