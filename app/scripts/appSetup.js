@@ -52,7 +52,7 @@ var fractalController = {
 // Setup Dat Gui
 window.onload = function() {
     console.log(randomColor({luminosity: 'bright', format: 'rgbArray'}));
-    var gui = new dat.GUI({autoPlace: false, load: JSON});
+    var gui = new dat.GUI({autoPlace: false});
     var rightPane = document.getElementById('controls');
     rightPane.appendChild(gui.domElement);
 
