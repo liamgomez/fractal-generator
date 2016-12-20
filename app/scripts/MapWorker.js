@@ -80,6 +80,20 @@ var fractalFunctions = {
         
         return iter;
     },
+    'julia': function(cx, cy, maxIter, cr, ci) {
+        var iter, xn, yn, x = cx, y = cy;
+        for (iter = 0; iter < maxIter; iter++) {
+            xn = x*x - y*y + cr;
+            yn = (x*y)*2 + ci;
+            if (xn*xn + yn*yn > 4) {
+                break;
+            }
+            x = xn;
+            y = yn;
+        }
+        
+        return iter;
+    },
     juliacubed : function(x, y, maxIter) {
         var x0 = x, y0 = y;
         var iter;
@@ -204,20 +218,6 @@ var fractalFunctions = {
         }
         
         return iter;
-    },
-    'julia': function(cx, cy, maxIter, cr, ci) {
-        var iter, xn, yn, x = cx, y = cy;
-        for (iter = 0; iter < maxIter; iter++) {
-            xn = x*x - y*y + cr;
-            yn = (x*y)*2 + ci;
-            if (xn*xn + yn*yn > 4) {
-                break;
-            }
-            x = xn;
-            y = yn;
-        }
-        
-        return iter;
     }
 }
 
@@ -243,8 +243,8 @@ function workerFunc(data, cb) {
         }
         var array = new Uint32Array(pixels);
         var canvas_image = new Uint8ClampedArray(array.buffer);
-
-        return canvas_image;
+        data.img.data.set(canvas_image);
+        return data.img;
     }
     else {
         // tile size = 256 rgb = 4 bits
@@ -267,11 +267,14 @@ function workerFunc(data, cb) {
             bitmap[pixelOffset] = 255;
             pixelOffset++;
         }
-        return bitmap;
+
+        data.img.data.set(bitmap);
+       // debugger;
+        return data.img;
     }
 }
 
 self.onmessage = function (e) {
     var ctx_image = self.workerFunc(e.data);
-    self.postMessage({ canvas_image: ctx_image }, [ctx_image.buffer]);
+    self.postMessage({ canvas_image: ctx_image });
 };

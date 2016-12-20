@@ -1,6 +1,8 @@
 L.GridLayer.FractalLayer = L.GridLayer.extend({
     options: {
         maxZoom:23,
+        noWrap: true,
+        updateInterval: 100
     },
 
     initialize: function (appControls) {
@@ -17,6 +19,12 @@ L.GridLayer.FractalLayer = L.GridLayer.extend({
         this.colors.push(appControls.fractalColor4);
         this.customColors = appControls.customColors;
 
+        /**
+         * These are RGB arrays not RGBA. The fourth entry is used in the
+         * generate color function to determine a colors frequency.
+         * [r,g,b,0] - [r,g,b,9] 
+         * would be 10 (scaled) occurences in 256 entry array.
+         */
         var presets = {
             'grayscale': [
                 [0, 0, 0, 255]
@@ -70,10 +78,13 @@ L.GridLayer.FractalLayer = L.GridLayer.extend({
         var custAdj2 = appControls.fractalColor2;
         var custAdj3 = appControls.fractalColor3;
         var custAdj4 = appControls.fractalColor4;
+
+        // TODO: Randomize these distributions, or have it be user configurable
         custAdj1.push(0);
         custAdj2.push(80);
         custAdj3.push(160);
         custAdj4.push(255);
+
         presets['YourColor'].push(custAdj1);
         presets['YourColor'].push(custAdj2);
         presets['YourColor'].push(custAdj3);
@@ -93,7 +104,7 @@ L.GridLayer.FractalLayer = L.GridLayer.extend({
 
         var ctx = tile.getContext('2d');
         var imagedata = ctx.getImageData(0, 0, 256, 256);
-        var UintArray = imagedata.data;
+
         var map = this.colorMap;
         var worker = new Worker('./scripts/MapWorker.js');
             var c = _this.colorMap;
@@ -106,13 +117,13 @@ L.GridLayer.FractalLayer = L.GridLayer.extend({
                 type: _this.fractalType,
                 cr: _this.cr, 
                 ci: _this.ci,
-                img: UintArray,
+                img: imagedata,
                 customColors: _this.customColors,
                 presetMap: _this.presetMap
-            }, [UintArray.buffer]);
+            });
 
         worker.onmessage = function (e) {
-           ctx.putImageData(new ImageData(e.data.canvas_image, 256, 256), 0, 0);
+           ctx.putImageData(e.data.canvas_image, 0, 0);
            worker.terminate();
            worker = undefined;
            done(null, tile);

@@ -71,6 +71,17 @@ body {
     outline: 1px solid transparent;
 }
 
-.dg.main.a {
-    z-index: 401;
+select {
+    -webkit-appearance: menulist;
+    box-sizing: border-box;
+    align-items: center;
+    white-space: pre;
+    -webkit-rtl-ordering: logical;
+    color: black;
+    background-color: white;
+    cursor: default;
+    border-width: 1px;
+    border-style: solid;
+    border-color: initial;
+    border-image: initial;
 }

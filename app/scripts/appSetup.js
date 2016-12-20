@@ -1,19 +1,24 @@
-var map = L.map('fractal_map', {minZoom:1});
+var map = L.map('fractal_map', {
+    minZoom:1,
+    fullscreenControl: {
+        pseudoFullscreen: false
+    }
+});
 map.setView([0, -90], 2); 
 var numWorkers = 3;
 
 var fractalController = {
     appControls: {
         type: 'mandlebrot',
-        customColors: false,
-        fractalColor1: [ 194, 232, 18 ],
-        fractalColor2: [49,209,133],
-        fractalColor3: [255,147,79],
-        fractalColor4: [98,30,244],
+        customColors: true,
+        fractalColor1: randomColor({luminosity: 'random', format: 'rgbArray'}),
+        fractalColor2: randomColor({luminosity: 'random', format: 'rgbArray'}),
+        fractalColor3: randomColor({luminosity: 'random', format: 'rgbArray'}),
+        fractalColor4: randomColor({luminosity: 'random', format: 'rgbArray'}),
         juliaCR: -0.74543,
         juliaCI: 0.11301,
         maxItt: 300,
-        colorPreset:'orange'
+        colorPreset:'YourColor'
     },
 
     activeLayer: null,
@@ -32,11 +37,22 @@ var fractalController = {
         this.activeLayer = L.gridLayer.fractalLayer(this.appControls);
         this.activeLayer.addTo(map);
     },
+    randomizeColors: function() {
+        this.appControls.fractalColor1 = randomColor({luminosity: 'random', format: 'rgbArray'});
+        this.appControls.fractalColor2 = randomColor({luminosity: 'random', format: 'rgbArray'});
+        this.appControls.fractalColor3 = randomColor({luminosity: 'random', format: 'rgbArray'});
+        this.appControls.fractalColor4 = randomColor({luminosity: 'random', format: 'rgbArray'});
+        this.reloadLayer();
+    },
+    resetZoom: function() {
+        map.setView([0, -90], 2); 
+    }
 };
 
 // Setup Dat Gui
 window.onload = function() {
-    var gui = new dat.GUI({autoPlace: false});
+    console.log(randomColor({luminosity: 'bright', format: 'rgbArray'}));
+    var gui = new dat.GUI({autoPlace: false, load: JSON});
     var rightPane = document.getElementById('controls');
     rightPane.appendChild(gui.domElement);
 
@@ -50,23 +66,25 @@ window.onload = function() {
         'juliacubed'
     ]);
     var presetController = gui.add(fractalController.appControls, 'colorPreset', [
+        'YourColor',
         'grayscale',
         'orange',
         'blue',
         'rainbow',
         'wobniar',
-        'test',
-        'YourColor'
+        'test'
     ]);
 
     var customColors = gui.add(fractalController.appControls, 'customColors');
-    var colorCont1 = gui.addColor(fractalController.appControls, 'fractalColor1');
-    var colorCont2 = gui.addColor(fractalController.appControls, 'fractalColor2');
-    var colorCont3 = gui.addColor(fractalController.appControls, 'fractalColor3');
-    var colorCont4 = gui.addColor(fractalController.appControls, 'fractalColor4');
+    var colorCont1 = gui.addColor(fractalController.appControls, 'fractalColor1').listen();
+    var colorCont2 = gui.addColor(fractalController.appControls, 'fractalColor2').listen();
+    var colorCont3 = gui.addColor(fractalController.appControls, 'fractalColor3').listen();
+    var colorCont4 = gui.addColor(fractalController.appControls, 'fractalColor4').listen();
     var juliaMaxItt = gui.add(fractalController.appControls, 'maxItt', 1, 1000).step(5);;
     var juliaCICont = gui.add(fractalController.appControls, 'juliaCI', -2.0, -0.01);
     var juliaCRCont = gui.add(fractalController.appControls, 'juliaCR', 0.1, 1);
+    gui.add(fractalController, 'randomizeColors');
+    gui.add(fractalController, 'resetZoom');
 
     // Handle fractal selection changes 
     controller.onFinishChange(function(value) {
