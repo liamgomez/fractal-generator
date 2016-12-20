@@ -5,6 +5,6 @@
   "ignore": [
     "scripts/MapLayer.js",
     "scripts/MapWorker.js",
-    "scripts/main.js"
+    "scripts/appSetup.js"
   ]
 }

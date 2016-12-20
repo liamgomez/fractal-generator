@@ -226,12 +226,12 @@ function workerFunc(data, cb) {
   var x0 = data.x / scale - 1;
   var y0 = data.y / scale - 1;
   var d = (scale << 8);
-  var pixels = new Array(65536);
   var MAX_ITER = data.maxIter;
   var c, cx, cy, iter, px, py, a1, a2, a3, a4;
   var func = fractalFunctions[data.type];
 
     if (! data.customColors) {
+        var pixels = new Array(65536);
         for (var i = 0; i < 65536; i++) {
             px = i % 256;
             py = (i - px) >> 8;

@@ -71,8 +71,8 @@ L.GridLayer.FractalLayer = L.GridLayer.extend({
         var custAdj3 = appControls.fractalColor3;
         var custAdj4 = appControls.fractalColor4;
         custAdj1.push(0);
-        custAdj2.push(100);
-        custAdj3.push(200);
+        custAdj2.push(80);
+        custAdj3.push(160);
         custAdj4.push(255);
         presets['YourColor'].push(custAdj1);
         presets['YourColor'].push(custAdj2);
