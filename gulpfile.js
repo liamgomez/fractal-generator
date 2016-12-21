@@ -5,12 +5,15 @@ const browserSync = require('browser-sync').create();
 const del = require('del');
 const wiredep = require('wiredep').stream;
 const runSequence = require('run-sequence');
-
+var gutil = require('gulp-util');
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
 var dev = true;
-
+$.uglify().on('error', function(err) {
+gutil.log(gutil.colors.red('[Error]'), err.toString());
+this.emit('end');
+})
 gulp.task('styles', () => {
   return gulp.src('app/styles/*.css')
     .pipe($.sourcemaps.init())
@@ -138,14 +141,14 @@ gulp.task('serve:test', ['scripts'], () => {
 gulp.task('wiredep', () => {
   gulp.src('app/*.html')
     .pipe(wiredep({
-      exclude: ['bootstrap.js'],
+      exclude: ['bootstrap.js','index.js'],
       ignorePath: /^(\.\.\/)*\.\./
     }))
     .pipe(gulp.dest('app'));
 });
 
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
-  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
+  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true})).on('error', gutil.log);
 });
 
 gulp.task('default', () => {

@@ -118,7 +118,6 @@ L.GridLayer.FractalLayer = L.GridLayer.extend({
                 cr: _this.cr, 
                 ci: _this.ci,
                 img: imagedata,
-                customColors: _this.customColors,
                 presetMap: _this.presetMap
             });
 

@@ -2,9 +2,4 @@
   "presets": [
     "es2015"
   ],
-  "ignore": [
-    "scripts/MapLayer.js",
-    "scripts/MapWorker.js",
-    "scripts/appSetup.js"
-  ]
 }

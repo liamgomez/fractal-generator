@@ -10,7 +10,6 @@ var numWorkers = 3;
 var fractalController = {
     appControls: {
         type: 'mandlebrot',
-        customColors: true,
         fractalColor1: randomColor({luminosity: 'random', format: 'rgbArray'}),
         fractalColor2: randomColor({luminosity: 'random', format: 'rgbArray'}),
         fractalColor3: randomColor({luminosity: 'random', format: 'rgbArray'}),
@@ -75,7 +74,6 @@ window.onload = function() {
         'test'
     ]);
 
-    var customColors = gui.add(fractalController.appControls, 'customColors');
     var colorCont1 = gui.addColor(fractalController.appControls, 'fractalColor1').listen();
     var colorCont2 = gui.addColor(fractalController.appControls, 'fractalColor2').listen();
     var colorCont3 = gui.addColor(fractalController.appControls, 'fractalColor3').listen();
@@ -90,9 +88,6 @@ window.onload = function() {
     controller.onFinishChange(function(value) {
         fractalController.setLayer(value);
         map.setView([0, -90], 2);
-    });
-    customColors.onFinishChange(function() {
-        fractalController.reloadLayer();
     });
     // Handle color schemes
     colorCont1.onFinishChange(function() {

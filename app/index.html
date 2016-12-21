@@ -11,15 +11,17 @@
 
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="/bower_components/leaflet/dist/leaflet.css" />
-    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+    <link rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css' />
     <!-- endbower -->
     <!-- endbuild -->
 
     <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="/bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="/bower_components/dat.gui/build/dat.gui.css" />
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.4.4/randomColor.js"></script>
 
   </head>
@@ -51,10 +53,7 @@
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/dat.gui/build/dat.gui.min.js"></script>
-    <script src="/bower_components/leaflet/dist/leaflet.js"></script>
-    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
     
@@ -74,8 +73,12 @@
     <!-- endbuild -->
     
     <!-- build:js scripts/main.js -->
+    <script src="/bower_components/dat.gui/build/dat.gui.min.js"></script>
+    <script src="/bower_components/leaflet/dist/leaflet.js"></script>
+    <script src='scripts/Leaflet.fullscreen.min.js'></script>
     <script src="scripts/MapLayer.js"></script>
     <script src="scripts/appSetup.js"></script>
     <!-- endbuild -->
+
   </body>
 </html>
