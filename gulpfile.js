@@ -80,6 +80,14 @@ gulp.task('extras', () => {
   }).pipe(gulp.dest('dist'));
 });
 
+gulp.task('worker', () => {
+  return gulp.src([
+    'app/scripts/MapWorker.js',
+  ], {
+    dot: true
+  }).pipe(gulp.dest('dist/scripts'));
+});
+
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
 gulp.task('serve', () => {
@@ -147,7 +155,7 @@ gulp.task('wiredep', () => {
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
+gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras', 'worker'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true})).on('error', gutil.log);
 });
 
